@@ -681,8 +681,6 @@ function RestCard({ p, onEdit, t }) {
 }
 
 /* ─── App ───────────────────────────────────────────────── */
-const SITE_PW = "Wink2025*&%#&%#&€!&#*";
-
 export default function App() {
   const [db,    setDb   ] = useState({});
   const [page,  setPage ] = useState("home");

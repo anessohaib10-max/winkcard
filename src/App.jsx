@@ -64,7 +64,7 @@ const PL = [
   {id:"instagram", label:"Instagram", color:"#C13584", dark:false, href:v=>v,                                    ph:"https://instagram.com/…", type:"url"},
   {id:"facebook",  label:"Facebook",  color:"#1877F2", dark:false, href:v=>v,                                    ph:"https://facebook.com/…",  type:"url"},
   {id:"tiktok",    label:"TikTok",    color:"#010101", dark:false, href:v=>v,                                    ph:"https://tiktok.com/@…",   type:"url"},
-  {id:"snapchat",  label:"Snapchat",  color:"#FFFC00", dark:true,  href:v=>`https://snapchat.com/add/${v}`,      ph:"username",         type:"text"},
+  {id:"snapchat",  label:"Snapchat",  color:"#FFFC00", dark:true,  href:v=>v.startsWith("http")?v:`https://snapchat.com/add/${v}`,      ph:"username or full URL",    type:"text"},
   {id:"telegram",  label:"Telegram",  color:"#29B6F6", dark:false, href:v=>`https://t.me/${v}`,                  ph:"@username",        type:"text"},
   {id:"youtube",   label:"YouTube",   color:"#FF0000", dark:false, href:v=>v,                                    ph:"https://youtube.com/@…",  type:"url"},
   {id:"pinterest", label:"Pinterest", color:"#E60023", dark:false, href:v=>v,                                    ph:"https://pinterest.com/…", type:"url"},
@@ -226,32 +226,6 @@ const OWNER_HASH_DEFAULT = "winkcard2025";
 
 /* ─── Translations ─────────────────────────────────────── */
 const T = {
-  ar:{dir:"rtl",brand:"WinkCard",newCard:"+ بطاقة جديدة",dark:"داكن",light:"فاتح",
-    heroTitle:"بطاقتك، بأسلوبك.",heroSub:"أنشئ بطاقة شخصية جميلة واحصل على رابط فريد.",
-    heroBtn:"✦ أنشئ بطاقتك",dash:"لوحة التحكم",dashSub:"فقط أنت ترى هذه الروابط",
-    copy:"نسخ الرابط",copied:"تم!",noCards:"لا توجد بطاقات",noCardsSub:"أنشئ بطاقتك الأولى للبدء",
-    createT:"إنشاء بطاقة جديدة",editT:"تعديل البطاقة",back:"← رجوع",backCard:"← رجوع للبطاقة",
-    notFound:"البطاقة غير موجودة",homeBtn:"الرئيسية",loading:"جاري التحميل…",
-    nameLb:"الاسم *",tagLb:"العنوان",bioLb:"نبذة",locLb:"الموقع",
-    photLb:"الصورة الشخصية",pickPh:"اختر صورة",
-    bannerLb:"📷 صورة الغلاف (اختياري)",uploadBn:"📷 اضغط لرفع صورة الغلاف",delBn:"✕ حذف",
-    colorLb:"🎨 لون الغلاف",patLb:"النمط",linksLb:"روابط التواصل",dragHint:"— اسحب لتغيير الترتيب",
-    layLb:"🎨 شكل عرض الروابط",layList:"📋 قائمة",layGrid:"⊞ شبكة",layIco:"◉ أيقونات",layPill:"◆ حبوب",
-    cvLb:"📄 السيرة الذاتية (CV)",cvHint:"اضغط لرفع PDF أو Word",cvSub:"يظهر زر تحميل CV في بطاقتك",
-    pwLb:"🔒 كلمة المرور *",pwHint:"ستحتاجها لتعديل أو حذف البطاقة",
-    cancel:"إلغاء",createBtn:"إنشاء البطاقة",saveBtn:"حفظ التغييرات",saving:"جاري الحفظ…",
-    editBtn:"✏️ تعديل",covH:"ارتفاع الغلاف",saveC:"حفظ جهة الاتصال",dlCV:"تحميل CV",
-    pwTitle:"🔒 كلمة المرور",pwPh:"أدخل كلمة المرور",pwWrong:"كلمة المرور خاطئة",pwOpen:"فتح",
-    nameReq:"الاسم مطلوب",pwReq:"كلمة المرور مطلوبة",pwShort:"4 أحرف على الأقل",
-    created:"🎉 تم إنشاء البطاقة!",updated:"✓ تم التحديث!",deleted:"تم الحذف.",
-    preview:"معاينة",catTitle:"اختر نوع البطاقة",catSub:"يمكنك تغيير النوع لاحقاً",
-    catPers:"بطاقة شخصية",catPersDesc:"ملف شخصي مع روابط التواصل",
-    catRest:"مطعم / كافيه",catRestDesc:"صور المنيو وروابط التواصل",
-    menuLb:"📸 صور المنيو",addPhoto:"إضافة",changeCat:"تغيير",
-    sitePwTitle:"🔐 WinkCard",sitePwSub:"أدخل كلمة المرور لإنشاء بطاقة",sitePwPh:"كلمة المرور",sitePwWrong:"كلمة المرور خاطئة",
-    ownerTitle:"🔐 رمز المالك",ownerSub:"أدخل الرمز السري لصلاحيات المالك",ownerWrong:"الرمز السري خاطئ",
-    confirmDelTitle:"🗑 تأكيد الحذف",confirmDelMsg:"هل أنت متأكد من حذف بطاقة",confirmDelBtn:"حذف نهائياً",
-  },
   fr:{dir:"ltr",brand:"WinkCard",newCard:"+ Nouvelle carte",dark:"Sombre",light:"Clair",
     heroTitle:"Votre carte, à votre style.",heroSub:"Créez une belle carte personnelle et obtenez un lien unique.",
     heroBtn:"✦ Créer ma carte",dash:"Tableau de bord",dashSub:"Seul vous voyez ces liens",
@@ -689,7 +663,7 @@ export default function App() {
   const [copied,setCopied] = useState(null);
   const [toast, setToast ] = useState(null);
   const [dark,  setDark  ] = useState(()=>localStorage.getItem("wc_dm")==="1");
-  const [lang,  setLang  ] = useState(()=>localStorage.getItem("wc_lang")||"ar");
+  const [lang,  setLang  ] = useState(()=>localStorage.getItem("wc_lang")||"fr");
   const [cat,   setCat   ] = useState(null);
   const [loading,setLoading] = useState(true);
   // Owner mode
@@ -703,6 +677,11 @@ export default function App() {
   const [showGate,   setShowGate  ] = useState(false);
   const [siteInput,  setSiteInput ] = useState("");
   const [siteErr,    setSiteErr   ] = useState("");
+  // Dashboard auth
+  const [dashAuth,   setDashAuth  ] = useState(()=>sessionStorage.getItem("wc_dash")==="1");
+  const [showDashGate, setShowDashGate] = useState(false);
+  const [dashInput,  setDashInput ] = useState("");
+  const [dashErr,    setDashErr   ] = useState("");
 
   const t = T[lang]||T.ar;
   const active = aid ? db[aid] : null;
@@ -732,6 +711,14 @@ export default function App() {
       setSiteAuth(true); setSiteInput(""); setSiteErr("");
       setShowGate(false); setCat(null); setPage("create");
     } else { setSiteErr("كلمة المرور خاطئة"); }
+  }
+
+  function tryDashAuth(){
+    if (dashInput===SITE_PW){
+      sessionStorage.setItem("wc_dash","1");
+      setDashAuth(true); setDashInput(""); setDashErr("");
+      setShowDashGate(false);
+    } else { setDashErr("كلمة المرور خاطئة / Wrong password"); }
   }
 
   function tryOwner(){
@@ -820,7 +807,7 @@ export default function App() {
         <div className="brand" onClick={goHome}>Wink<b>Card</b></div>
         <div className="nav-r">
           <div className="lang-sw">
-            {["ar","fr","en"].map(l=><button key={l} className={`lang-btn${lang===l?" on":""}`} onClick={()=>switchLang(l)}>{l==="ar"?"ع":l.toUpperCase()}</button>)}
+            {["fr","en"].map(l=><button key={l} className={`lang-btn${lang===l?" on":""}`} onClick={()=>switchLang(l)}>{l.toUpperCase()}</button>)}
           </div>
           <button onClick={()=>ownerMode?setOwnerMode(false):setOwnerModal(true)}
             title={ownerMode?"إلغاء وضع المالك":"دخول كمالك"}
@@ -844,9 +831,26 @@ export default function App() {
             <button className="btn pr" style={{padding:".65rem 1.6rem",fontSize:".92rem",borderRadius:9}} onClick={goCreate}>{t.heroBtn}</button>
           </div>
           {list.length>0&&<>
-            <div style={{fontWeight:800,fontSize:"1.15rem",marginBottom:".22rem"}}>{t.dash}</div>
+            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:".22rem"}}>
+              <div style={{fontWeight:800,fontSize:"1.15rem"}}>{t.dash}</div>
+              {!dashAuth&&<button onClick={()=>setShowDashGate(true)}
+                style={{fontSize:".72rem",fontWeight:700,color:"#0080ff",background:"rgba(0,128,255,.1)",border:"1px solid rgba(0,128,255,.25)",borderRadius:6,padding:".25rem .65rem",cursor:"pointer",fontFamily:"inherit"}}>
+                🔑 View cards
+              </button>}
+              {dashAuth&&<button onClick={()=>{setDashAuth(false);sessionStorage.removeItem("wc_dash");}}
+                style={{fontSize:".72rem",fontWeight:700,color:"#34c759",background:"rgba(52,199,89,.1)",border:"1px solid rgba(52,199,89,.25)",borderRadius:6,padding:".25rem .65rem",cursor:"pointer",fontFamily:"inherit"}}>
+                🔓 Locked
+              </button>}
+            </div>
             <div style={{fontSize:".78rem",color:"var(--mu)",marginBottom:".8rem"}}>{t.dashSub}</div>
-            <div className="plist">
+            {!dashAuth
+              ? <div style={{padding:"2rem",textAlign:"center",background:"var(--card)",borderRadius:13,border:"1px solid var(--bo)"}}>
+                  <div style={{fontSize:"1.8rem",marginBottom:".5rem"}}>🔒</div>
+                  <div style={{fontWeight:700,fontSize:".9rem",marginBottom:".3rem"}}>Protected Dashboard</div>
+                  <div style={{fontSize:".78rem",color:"var(--mu)",marginBottom:"1rem"}}>Enter password to view cards</div>
+                  <button className="btn pr" onClick={()=>setShowDashGate(true)}>🔑 Enter Password</button>
+                </div>
+              : <div className="plist">
               {list.map(p=>{
                 const bg=COVERS[p.ci??0]||COVERS[0];
                 return (
@@ -872,7 +876,7 @@ export default function App() {
                   </div>
                 );
               })}
-            </div>
+              </div>}
           </>}
           {list.length===0&&<div className="empty"><div style={{fontSize:"2rem",marginBottom:".5rem"}}>✦</div><div style={{fontWeight:800}}>{t.noCards}</div><div style={{fontSize:".82rem",marginTop:".3rem"}}>{t.noCardsSub}</div></div>}
         </>}
@@ -911,6 +915,26 @@ export default function App() {
 
       {pw&&active&&<PwModal stored={active.pw} t={t} onClose={()=>setPw(null)} onOk={()=>{setPw(null);pw==="edit"?setPage("edit"):onDel();}}/>}
       {gateModal}
+
+      {/* Dashboard gate modal */}
+      {showDashGate&&(
+        <div className="ov" onClick={()=>{setShowDashGate(false);setDashInput("");setDashErr("");}}>
+          <div className="mod" onClick={e=>e.stopPropagation()}>
+            <div className="mh">🔑 Dashboard Password <button onClick={()=>{setShowDashGate(false);setDashInput("");setDashErr("");}} style={{background:"none",border:"none",cursor:"pointer",fontSize:".9rem"}}>✕</button></div>
+            <div className="mb">
+              <div style={{fontSize:".82rem",color:"var(--mu)",marginBottom:".7rem"}}>Enter password to view your cards</div>
+              <input className="inp" type="password" autoFocus value={dashInput}
+                onChange={e=>{setDashInput(e.target.value);setDashErr("");}}
+                onKeyDown={e=>e.key==="Enter"&&tryDashAuth()} placeholder="Password"/>
+              {dashErr&&<div className="er">{dashErr}</div>}
+            </div>
+            <div className="mf">
+              <button className="btn gh" onClick={()=>{setShowDashGate(false);setDashInput("");setDashErr("");}}>Cancel</button>
+              <button className="btn pr" onClick={tryDashAuth}>Enter</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Owner modal */}
       {ownerModal&&(
